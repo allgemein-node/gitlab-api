@@ -17,7 +17,7 @@ services:
     volumes:
      - ./gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
      - ./gitlab/config/gitlab-secrets.json:/etc/gitlab/gitlab-secrets.json
-     - ./gitlab/backups:/var/opt/gitlab/backups
+     - ./gitlab/backups/test_gitlab_backup.tar:/var/opt/gitlab/backups/test_gitlab_backup.tar
      - ./gitlab/startup.sh:/bin/gitlab-startup
     command:
      - /bin/gitlab-startup
