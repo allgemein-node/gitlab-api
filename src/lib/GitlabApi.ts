@@ -31,11 +31,16 @@ import {
   Scope,
   Tag,
   TreeFile,
+  User,
 } from './types';
 import {ILoggerApi, ILogLevel} from '@allgemein/base';
 import {HttpFactory, IHttp, IHttpOptions, IHttpResponse} from '@allgemein/http';
 import {URL} from 'url';
 
+function encodeRFC5987ValueChars(str: string) {
+  return encodeURIComponent(str).replace(/['()]/g, escape). // i.e., %27 %28 %29
+    replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
+}
 
 /**
  * API request options
@@ -129,8 +134,8 @@ export class GitlabApi {
     },
     setLevel(level: number | string) {
     }
-
   };
+
 
   /**
    * Instantiate new GitLab API
@@ -146,9 +151,10 @@ export class GitlabApi {
     }
 
     this.privateToken = privateToken;
-    this.http = HttpFactory.$().create();
+    this.http = HttpFactory.create();
     this.logger = logger ? logger : this.logger;
   }
+
 
   /**
    * List all projects
@@ -157,6 +163,46 @@ export class GitlabApi {
     return this.makeGitLabAPIRequest(
       `projects`
     ) as Promise<Project[]>;
+  }
+
+  /**
+   * Get single project data
+   */
+  getProject(id_or_name: string | number) {
+    const d = this.decode(id_or_name);
+    return this.makeGitLabAPIRequest(
+      `projects/${d}`
+    ) as Promise<Project>;
+  }
+
+  /**
+   * List user projects
+   */
+  getProjectsForUser(user_id: string | number) {
+    return this.makeGitLabAPIRequest(
+      `users/${this.decode(user_id)}/projects`
+    ) as Promise<Project[]>;
+  }
+
+  /**
+   * Get projects for a group
+   *
+   * @param groupId Group ID to get projects for
+   */
+  getProjectsForGroup(groupId: number | string): Promise<Project[]> {
+    return this.makeGitLabAPIRequest(
+      `groups/${this.decode(groupId)}/projects`
+    ) as Promise<Project[]>;
+  }
+
+
+  /**
+   * Get single project data
+   */
+  getProjectUsers(id_or_name: string | number) {
+    return this.makeGitLabAPIRequest(
+      `projects/${this.decode(id_or_name)}/users`
+    ) as Promise<User[]>;
   }
 
   /**
@@ -483,14 +529,6 @@ export class GitlabApi {
     return this.makeGitLabAPIRequest(`/projects/${projectId}/issues/${issue.iid}/notes?sort=asc`) as Promise<Note[]>;
   }
 
-  /**
-   * Get projects for a group
-   *
-   * @param groupId Group ID to get projects for
-   */
-  public getProjectsForGroup(groupId: number): Promise<Project[]> {
-    return this.makeGitLabAPIRequest(`groups/${groupId}/projects`) as Promise<Project[]>;
-  }
 
   /**
    * Get sub groups of a group
@@ -498,7 +536,7 @@ export class GitlabApi {
    * @param groupId Group ID to get subgroups for
    */
   public getSubGroupsForGroup(groupId: number): Promise<Group[]> {
-    return this.makeGitLabAPIRequest(`/groups/${groupId}/subgroups`) as Promise<Group[]>;
+    return this.makeGitLabAPIRequest(`groups/${groupId}/subgroups`) as Promise<Group[]>;
   }
 
   /**
@@ -551,7 +589,6 @@ export class GitlabApi {
       let body;
       const method = _options.method.toLowerCase();
       const requestUrl = `${_url}${concatenator}page=${currentPage}&per_page=100`;
-
       const reqOptions: IHttpOptions & any = {
         headers: {'PRIVATE-TOKEN': this.privateToken},
         responseType: 'json',
@@ -576,7 +613,12 @@ export class GitlabApi {
         reqOptions.form = _options.data;
       }
 
+      // try {
       body = await this.http[method](`${this.rootUrl}${requestUrl}`, reqOptions);
+      // } catch (e) {
+
+      // }
+
 
       // body = await request(`${this.rootUrl}${requestUrl}`, {
       //   form: _options.data !== null ? _options.data : undefined,
@@ -611,6 +653,13 @@ export class GitlabApi {
     }
 
     return apiResult;
+  }
+
+  private decode(id: string | number) {
+    if (typeof id === 'string') {
+      return encodeRFC5987ValueChars(id);
+    }
+    return id;
   }
 
   /**
@@ -683,3 +732,5 @@ export class GitlabApi {
     ) as Promise<Issue>;
   }
 }
+
+
