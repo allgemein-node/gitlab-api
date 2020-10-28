@@ -29,7 +29,7 @@ before_install:
   - cd docker/testing
   - docker-compose up &
   - cd ../..
-  - sleep 300
+  - sleep 360
 #  - docker exec -it gitlab_ee_cont gitlab-backup restore BACKUP=test force=yes
 #  - docker exec -it gitlab_ee_cont gitlab-backup restore BACKUP=test force=yes
 
