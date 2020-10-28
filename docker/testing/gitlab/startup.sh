@@ -23,7 +23,14 @@ if [ ! -f /etc/.gitlab-booted ]; then
   gitlab-ctl start sidekiq
   gitlab-ctl start puma
   gitlab-ctl start unicorn
-  sleep 30
+  req=`curl -L  http://127.0.0.1:8929/api/v4/projects -H "PRIVATE-TOKEN: Nx78xRzzLMKxBVmYnhzr" -I  2>/dev/null | head -n 1 | cut -d$' ' -f2`;
+  while [ "$req" != "200" ];
+  do
+    echo "Waiting for server ..."
+    sleep 5;
+    req=`curl -L  http://localhost:8929/api/v4/projects -H "PRIVATE-TOKEN: Nx78xRzzLMKxBVmYnhzr" -I  2>/dev/null | head -n 1 | cut -d$' ' -f2`;
+  done
+
   touch /etc/.gitlab-booted
   echo "Install backup => done"
 fi
