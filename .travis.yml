@@ -1,0 +1,35 @@
+language: node_js
+# sudo: required
+
+node_js:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.25.1 CI_RUN=1
+
+services:
+  - docker
+
+
+before_script:
+  - sudo /etc/init.d/mysql stop
+  - sudo /etc/init.d/postgresql stop
+
+before_install:
+  - npm install -g nyc
+  - npm install -g codecov
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - cd docker/testing
+  - docker-compose up &
+  - cd ../..
+  - sleep 180
+#  - docker exec -it gitlab_ee_cont gitlab-backup restore BACKUP=test force=yes
+#  - docker exec -it gitlab_ee_cont gitlab-backup restore BACKUP=test force=yes
+
