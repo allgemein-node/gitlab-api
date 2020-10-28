@@ -6,6 +6,7 @@ set -m
 
 
 if [ ! -f /etc/.gitlab-booted ]; then
+  chmod 777 -R /var/opt/gitlab/backups
   echo "Waiting ..."
   while [ ! -f /var/opt/gitlab/bootstrapped ]; do
     echo "Waiting for bootstrap ..."
