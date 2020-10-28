@@ -20,9 +20,8 @@ if [ ! -f /etc/.gitlab-booted ]; then
   gitlab-ctl stop puma
   gitlab-ctl stop sidekiq
   gitlab-backup restore BACKUP=test force=yes
-  gitlab-ctl start sidekiq
-  gitlab-ctl start puma
-  gitlab-ctl start unicorn
+  gitlab-ctl restart
+  sleep 30
   touch /etc/.gitlab-booted
   echo "Install backup => done"
 fi
