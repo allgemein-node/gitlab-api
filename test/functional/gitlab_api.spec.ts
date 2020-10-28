@@ -5,7 +5,7 @@ import {Logger} from '@allgemein/base';
 import {HttpFactory} from '@allgemein/http';
 
 const PROJECT_ACCESS_TOKEN = 'pp8WreXi_mBsLUC6vmKh';
-const ROOT_URL = 'http://localhost:8929';
+const ROOT_URL = 'http://127.0.0.1:8929';
 HttpFactory.load();
 
 /**
