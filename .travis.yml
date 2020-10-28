@@ -2,10 +2,10 @@ language: node_js
 # sudo: required
 
 node_js:
-  - 10
-  - 11
-  - 12
-  - 13
+#  - 10
+#  - 11
+#  - 12
+#  - 13
   - 14
 
 env:
@@ -27,6 +27,7 @@ before_install:
   - docker-compose up &
   - sudo docker ps
   - cd ../..
+  - sleep 120
   - word=`sudo docker exec -it gitlab_ee_cont test -f /etc/.gitlab-booted && echo "1"`;
   - while [ "$word" != "1" ]; do sleep 30; word=`sudo docker exec -it gitlab_ee_cont test -f /etc/.gitlab-booted && echo "1"`; done;
   - req=`curl -L  http://127.0.0.1:8929/api/v4/projects -H "PRIVATE-TOKEN: Nx78xRzzLMKxBVmYnhzr" -I  2>/dev/null | head -n 1 | cut -d$' ' -f2`;
