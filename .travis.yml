@@ -22,8 +22,9 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - cd docker/testing
   - docker-compose up &
+  - sudo docker ps
   - cd ../..
-  - word=`docker exec -it gitlab_ee_cont test -f /etc/.gitlab-booted && echo "1"`; while [ "$word" != "1" ]; do sleep 30; word=`docker exec -it gitlab_ee_cont test -f /etc/.gitlab-booted && echo "1"`; done;
+  - word=`sudo docker exec -it gitlab_ee_cont test -f /etc/.gitlab-booted && echo "1"`; while [ "$word" != "1" ]; do sleep 30; word=`sudo docker exec -it gitlab_ee_cont test -f /etc/.gitlab-booted && echo "1"`; done;
 #  - docker exec -it gitlab_ee_cont gitlab-backup restore BACKUP=test force=yes
 #  - docker exec -it gitlab_ee_cont gitlab-backup restore BACKUP=test force=yes
 
