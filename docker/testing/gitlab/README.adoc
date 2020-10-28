@@ -1,0 +1,41 @@
+## Testing the Api with Gitlab-EE docker container
+
+Start the container with:
+```
+docker-compose up
+```
+
+At startup the script "startup.sh" will be execute which proceeds with
+the installation of gitlab-ee till it is finished. Then the backup file
+(under backups/test) with
+test groups, projects, users, issues, etc. will be installed.
+
+
+Users:
+
+* username: root +
+  password: gitlab12345 +
+  token: _1xqBqP8Qt7M1xwMAr-u
+
+* username: test +
+  password: test1234 +
+  token: Nx78xRzzLMKxBVmYnhzr +
+
+Projects:
+
+* name: personal-project +
+  owner: test +
+  token: pp8WreXi_mBsLUC6vmKh
+
+
+New changes needed for testing should be configured in the web ui of the gitlab instance.
+After made changes the instance must be backuped and replacing backups/test file.
+
+```
+$ docker exec -it gitlab_ee_cont /bin/bash
+docker$ gitlab-backup create
+docker$ cp /var/opt/gitlab/backups/123456_gitlab_backup.tar /var/opt/gitlab/backups/test_gitlab_backup.tar
+docker$ exit
+```
+
+

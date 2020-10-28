@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    image: 'gitlab/gitlab-ee:latest'
+    container_name: gitlab_ee_cont
+    restart: always
+    hostname: localhost
+    environment:
+      GITLAB_ROOT_PASSWORD: gitlab12345
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    ports:
+      - '127.0.0.1:8929:8929'
+      - '127.0.0.1:2224:2224'
+    volumes:
+     - ./gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
+     - ./gitlab/config/gitlab-secrets.json:/etc/gitlab/gitlab-secrets.json
+     - ./gitlab/backups:/var/opt/gitlab/backups
+     - ./gitlab/startup.sh:/bin/gitlab-startup
+    command:
+     - /bin/gitlab-startup
