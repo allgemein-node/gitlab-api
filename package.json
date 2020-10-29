@@ -15,7 +15,7 @@
     "url": "git+https://github.com/allgemein-node/gitlab-api.git"
   },
   "author": "Robert Kania",
-  "license": "MIT",
+  "license": "GPL v3",
   "keywords": [
     "commons",
     "allgemein",
